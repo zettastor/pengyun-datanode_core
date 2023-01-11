@@ -22,8 +22,9 @@ import org.apache.commons.lang3.Validate;
  * A "map" that acts as a cache.
  */
 public class DoublyLinkedHashMap<K, V> {
-  private int MAX_FREE_ENTRIES = 100;
-  private final Map<K, DoublyLinkedHashMap.Entry<K, V>> map = new HashMap<K, DoublyLinkedHashMap.Entry<K, V>>();
+
+  private int maxFreeEntries = 100;
+  private final Map<K, DoublyLinkedHashMap.Entry<K, V>> map = new HashMap<>();
   private DoublyLinkedHashMap.Entry<K, V> header = null;
   private DoublyLinkedHashMap.Entry<K, V> freeEntriesHeader = null;
   private int freeEntriesCount = 0;
@@ -49,7 +50,7 @@ public class DoublyLinkedHashMap<K, V> {
   }
 
   private boolean isEmpty() {
-    boolean empty  = map.size() == 0;
+    boolean empty = map.size() == 0;
     if (empty) {
       Validate.isTrue(header.after == header.before);
     }
@@ -73,11 +74,11 @@ public class DoublyLinkedHashMap<K, V> {
   }
 
   public V removeLastValue() {
-    if (isEmpty()){
+    if (isEmpty()) {
       return null;
     }
 
-    DoublyLinkedHashMap.Entry<K,V> tail = header.after;
+    DoublyLinkedHashMap.Entry<K, V> tail = header.after;
     Validate.isTrue(tail != header);
     return remove(tail.getKey());
   }
@@ -116,19 +117,19 @@ public class DoublyLinkedHashMap<K, V> {
   // the entry is supposed to be removed from the list already
   private void releaseEntry(DoublyLinkedHashMap.Entry<K, V> entry) {
     // Neutralize the entry, so that it can be GCed later
-      entry.key = null;
-      entry.value = null;
-      entry.before = null;
-      entry.after = null;
+    entry.key = null;
+    entry.value = null;
+    entry.before = null;
+    entry.after = null;
 
-    if (freeEntriesCount < MAX_FREE_ENTRIES) {
+    if (freeEntriesCount < maxFreeEntries) {
       entry.addBefore(freeEntriesHeader);
-    freeEntriesCount++;
+      freeEntriesCount++;
     } //else too many free entry, just GC it.
   }
 
   public V remove(K key) {
-    if (isEmpty()){
+    if (isEmpty()) {
       return null;
     }
 
@@ -143,10 +144,11 @@ public class DoublyLinkedHashMap<K, V> {
     }
   }
 
-  private static class Entry<K,V> implements Map.Entry<K,V> {
+  private static class Entry<K, V> implements Map.Entry<K, V> {
+
     // These fields comprise the doubly linked list used for iteration.
-    DoublyLinkedHashMap.Entry<K,V> before;
-    DoublyLinkedHashMap.Entry<K,V> after;
+    DoublyLinkedHashMap.Entry<K, V> before;
+    DoublyLinkedHashMap.Entry<K, V> after;
     private K key;
     private V value;
 
@@ -184,7 +186,7 @@ public class DoublyLinkedHashMap<K, V> {
     }
 
     /**
-     * Removes the entry before mine
+     * Removes the entry before mine.
      */
     private DoublyLinkedHashMap.Entry<K, V> removeBefore() {
       Validate.notNull(before);
@@ -192,16 +194,16 @@ public class DoublyLinkedHashMap<K, V> {
         return null;
       }
 
-      DoublyLinkedHashMap.Entry<K,V> beforeEntry = before;
+      DoublyLinkedHashMap.Entry<K, V> beforeEntry = before;
       beforeEntry.removeMyself();
       return beforeEntry;
     }
 
-      /**
-       * Inserts this entry before the specified existing entry in the list.
-       */
-    private void addBefore(DoublyLinkedHashMap.Entry<K,V> existingEntry) {
-      after  = existingEntry;
+    /**
+     * Inserts this entry before the specified existing entry in the list.
+     */
+    private void addBefore(DoublyLinkedHashMap.Entry<K, V> existingEntry) {
+      after = existingEntry;
       before = existingEntry.before;
       before.after = this;
       after.before = this;
@@ -210,7 +212,7 @@ public class DoublyLinkedHashMap<K, V> {
     /**
      * Inserts this entry after the specified existing entry in the list.
      */
-    private void addAfter(DoublyLinkedHashMap.Entry<K,V> existingEntry) {
+    private void addAfter(DoublyLinkedHashMap.Entry<K, V> existingEntry) {
       after = existingEntry.after;
       existingEntry.after = this;
       before = existingEntry;
@@ -232,7 +234,7 @@ public class DoublyLinkedHashMap<K, V> {
   }
 
   protected void setMaxFreeEntryCount(int max) {
-    MAX_FREE_ENTRIES = max;
+    maxFreeEntries = max;
   }
 
 }

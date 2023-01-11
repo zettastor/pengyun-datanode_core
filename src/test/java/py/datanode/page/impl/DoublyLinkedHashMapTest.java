@@ -134,7 +134,7 @@ public class DoublyLinkedHashMapTest extends TestBase {
     int freeCount = 0;
     for (Integer s : sources) {
       Integer testS = cache.removeLastValue();
-      freeCount ++;
+      freeCount++;
       int freeEntriesCountFromCache = cache.getFreeEntryCount();
       Assert.assertEquals(freeCount, freeEntriesCountFromCache);
     }
@@ -143,7 +143,7 @@ public class DoublyLinkedHashMapTest extends TestBase {
     for (Integer s : sources) {
       logger.debug("s:{}", s);
       cache.putFirst(s, s);
-      freeCount --;
+      freeCount--;
       // not from the free entries
       int freeEntriesCountFromCache = cache.getFreeEntryCount();
       Assert.assertEquals(freeCount, freeEntriesCountFromCache);
