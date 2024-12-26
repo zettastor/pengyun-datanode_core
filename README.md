@@ -1,1 +1,0 @@
-A collection of classes and methods that provide DataNode core functions and helper functionalities for ZettaStor DBS.
